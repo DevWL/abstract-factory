@@ -42,6 +42,30 @@ class PolandFactory extends AbstractFactory
 
 }
 
+/**
+ *  Concreet factory
+ */
+class UKFactory extends AbstractFactory
+{
+
+    public function createFundaments(){
+        return 'fundamentUK'.PHP_EOL;
+    }
+    public function createWall(){
+        return 'wallsUK'.PHP_EOL;
+    }
+    public function createWindow(){
+        return 'windowsUK'.PHP_EOL;
+    }
+    public function createDor(){
+        return 'dorsUK'.PHP_EOL;
+    }
+    public function createRoof(){
+        return 'roofUK'.PHP_EOL;
+    }
+
+}
+
 abstract class Buildig
 {
     public $price = null;
@@ -82,17 +106,61 @@ class Basement extends Buildig{
 
 class Client
 {
-    public function orderBuilding($factory, $name){
-        if (class_exists($name)){
-            $building = new $name(new $factory());
+    private $_budget;
+    private $_size;
+
+    public function orderBuilding($factory, $building){
+        if (class_exists($building)){
+            $building = new $building(new $factory());
             $this->preset($building);
             return $building;
         }
-        throw new Exception("$name is not available", 1);
+        throw new Exception("$building is not available", 1);
     }
 
     public function preset(Buildig $building){
-        $building->price = 250000;
-        $building->size = 120;
+        $this->validate();
+        $building->price = $this->_budget;
+        $building->_size = $this->_size;
+        $this->clear();
     }
+
+    public function validate(){
+        $error = false;
+        if($this->_budget == null) $error = true;
+        if($this->_size == null) $error = true;
+        if($error) throw new Exception("Set order values", 1);
+        
+
+    }
+
+    public function clear(){
+        $this->_budget = null;
+        $this->_size = null;
+    }
+
+    /**
+     * Sets the value of _budget.
+     *
+     * @param mixed $_budget the _budget
+     *
+     * @return self
+     */
+    public function _setBudget($budget)
+    {
+        $this->_budget = $budget;
+    }
+
+    /**
+     * Sets the value of _size.
+     *
+     * @param mixed $_size the _size
+     *
+     * @return self
+     */
+    public function _setsize($size)
+    {
+        $this->_size = $size;
+    }
+
 } 
